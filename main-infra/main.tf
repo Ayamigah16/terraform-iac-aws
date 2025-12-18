@@ -6,6 +6,9 @@ data "http" "my_public_ip" {
 locals {
   # Use auto-detected IP if my_ip_cidr is not set, otherwise use provided value
   detected_ip = var.my_ip_cidr != "" ? var.my_ip_cidr : "${chomp(data.http.my_public_ip.response_body)}/32"
+  
+  # Use provided key_name or generate from project_name, or empty if not needed
+  key_name = var.key_name != "" ? var.key_name : "${var.project_name}-key-pair"
 }
 
 # Network Module: VPC, Subnet, IGW, Route, SG
@@ -26,4 +29,5 @@ module "compute" {
   sg_id         = module.network.sg_id
   ami_id        = var.ami_id
   instance_type = var.instance_type
+  key_name      = local.key_name
 }

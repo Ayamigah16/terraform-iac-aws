@@ -10,6 +10,12 @@ variable "profile_name" {
   default     = "default"
 }
 
+variable "project_name" {
+  description = "The name of the project"
+  type        = string
+  default     = "terraform-iac-aws"
+}
+
 variable "environment" {
   description = "The deployment environment (e.g., dev, staging, prod)"
   type        = string
@@ -50,4 +56,10 @@ variable "instance_type" {
   description = "The EC2 instance type (e.g., t2.micro, t3.micro, t3.small)"
   type        = string
   default     = "t3.micro"
+}
+
+variable "key_name" {
+  description = "Name of the EC2 key pair for SSH access. Defaults to '<project_name>-key-pair'. Leave empty to skip SSH access."
+  type        = string
+  default     = ""
 }

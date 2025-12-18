@@ -53,3 +53,4 @@ terraform.rc
 REVIEW_SUMMARY.md
 QUICKSTART.md
 *.example
+connect.sh

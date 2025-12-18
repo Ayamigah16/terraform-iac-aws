@@ -20,6 +20,11 @@ output "detected_ip_cidr" {
   value       = local.detected_ip
 }
 
+output "key_pair_name" {
+  description = "The name of the EC2 key pair being used"
+  value       = local.key_name
+}
+
 # Compute Outputs
 output "ec2_instance_id" {
   description = "The ID of the EC2 instance"
