@@ -50,5 +50,6 @@ terraform.rc
 *.tfbackend
 !*.tfbackend.example
 *.env
-*.md
+REVIEW_SUMMARY.md
+QUICKSTART.md
 *.example
