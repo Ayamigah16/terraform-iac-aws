@@ -14,6 +14,12 @@ output "security_group_id" {
   value       = module.network.sg_id
 }
 
+# Security Outputs
+output "detected_ip_cidr" {
+  description = "The IP address used for SSH access (auto-detected or manually set)"
+  value       = local.detected_ip
+}
+
 # Compute Outputs
 output "ec2_instance_id" {
   description = "The ID of the EC2 instance"

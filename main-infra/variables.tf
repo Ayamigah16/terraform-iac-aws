@@ -35,9 +35,9 @@ variable "aws_az" {
 }
 
 variable "my_ip_cidr" {
-  description = "Your IP address in CIDR notation for SSH access (e.g., 1.2.3.4/32)"
+  description = "Your IP address in CIDR notation for SSH access (e.g., 1.2.3.4/32). Leave empty to auto-detect."
   type        = string
-  # No default - must be provided for security
+  default     = ""
 }
 
 variable "ami_id" {
