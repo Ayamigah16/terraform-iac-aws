@@ -56,3 +56,5 @@ QUICKSTART.md
 connect.sh
 create-key-pair.sh
 *.log
+*.pem
+*.key
