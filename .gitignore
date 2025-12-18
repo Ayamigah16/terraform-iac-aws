@@ -39,9 +39,12 @@ terraform.rc
 # Ignore transient lock info files
 .terraform.tfstate.lock.info
 
-# Ignore lock files (optional - some teams prefer to commit this)
-# .terraform.lock.hcl
+# DO NOT ignore .terraform.lock.hcl - it should be committed!
+# The lock file ensures consistent provider versions across all environments
+# This prevents "works on my machine" issues and unexpected provider changes
 
-
-*.md
+# Ignore backend configuration files (contains generated bucket names)
+*.tfbackend
+!*.tfbackend.example
 *.env
+*.md
