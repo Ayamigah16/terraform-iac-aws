@@ -1,6 +1,9 @@
 # Terraform AWS Infrastructure Project
 
 This project uses Terraform to define and deploy foundational AWS infrastructure with a remote backend in Amazon S3 and DynamoDB state locking.
+
+---
+
 ## Architecture Diagram
 
 ```
@@ -49,6 +52,7 @@ This project uses Terraform to define and deploy foundational AWS infrastructure
 ```
 
 ---
+
 ## Project Structure
 
 ```
@@ -114,8 +118,13 @@ terraform-iac-aws/
    aws configure
    # Enter your AWS Access Key ID, Secret Access Key, region, and output format
    ```
+3. **Create SSH KEY-PAIR** (for SSH Authentication)
+   ```bash
+   aws ec2 create-key-pair --key-name "$KEY_NAME" --query 'KeyMaterial' --output text > "${KEY_NAME}.pem"
+   chmod 400 "${KEY_NAME}.pem"
+   ```
 
-3. **Get Your IP Address** (for SSH security group rule)
+4. **Get Your IP Address** (for SSH security group rule)
    ```bash
    curl -4 ifconfig.me
    ```
@@ -135,18 +144,20 @@ nano main-infra/terraform.tfvars  # Update with your values
 ./deploy.sh
 ```
 
+![](./screenshots/running-automated-deploy-script.png)
+
 The script will:
 - Deploy backend infrastructure (S3 + DynamoDB)
 - Capture backend outputs automatically
 - Generate backend.tfbackend configuration file
 - Initialize main-infra with the correct backend
 
-After the script completes, deploy the infrastructure:
+After the script completes, ssh into the ec2 with public ip:
 ```bash
-cd main-infra
-terraform plan
-terraform apply
+ssh -i <key>.pem ubuntu@<this-ip>"
 ```
+
+![](./screenshots/ssh_ing-into-ec2-server-with-my-ip.png)
 
 To destroy everything:
 ```bash
@@ -164,17 +175,28 @@ cd backend-setup
 
 # Initialize Terraform
 terraform init
+```
 
+```
 # Review the execution plan
 terraform plan
+```
 
+![](./screenshots/s3-backend-state-plan.png)
+
+```
 # Apply the configuration
 terraform apply
+```
+![](./screenshots/s3-backend-state-apply.png)
 
+```
 # Note the outputs - you'll need the bucket name for the next step
 ```
 
 **Important**: Copy the S3 bucket name from the output.
+
+---
 
 #### Step 2: Configure Main Infrastructure
 
@@ -206,6 +228,8 @@ terraform apply
      --region eu-west-1
    ```
 
+---
+
 #### Step 3: Deploy Main Infrastructure
 
 ```bash
@@ -216,16 +240,26 @@ terraform init -backend-config=backend.tfbackend
 
 # Validate the configuration
 terraform validate
+```
 
+```
 # Review the execution plan
 terraform plan
+```
+![](./screenshots/main-infrastructure-plan.png)
 
+```
 # Apply the configuration
 terraform apply
+```
+![](./screenshots/main-infrastructure-apply.png)
 
+```
 # View outputs
 terraform output
 ```
+
+---
 
 #### Step 4: Verify Deployment
 
@@ -243,6 +277,8 @@ terraform output
    ```bash
    curl http://$(terraform output -raw ec2_public_ip)
    ```
+
+---
 
 #### Step 5: Cleanup
 
@@ -262,7 +298,9 @@ terraform destroy
 
 ⚠️ **Warning**: Destroying the backend will delete your S3 bucket and DynamoDB table. Make sure you've backed up any important state files.
 
-## Best Practices Implemented
+--- 
+
+## Features Implemented
 
 ✅ **Modular Design**: Separate modules for network and compute resources  
 ✅ **Remote State**: S3 backend with DynamoDB locking prevents concurrent modifications  
@@ -283,6 +321,8 @@ terraform destroy
   
 ✅ **Documentation**: Comprehensive outputs for all resources  
 ✅ **Version Control**: .gitignore for sensitive files
+
+--- 
 
 ## Troubleshooting
 
@@ -307,15 +347,7 @@ terraform force-unlock <LOCK_ID>
 - Ensure you've associated an SSH key pair with the EC2 instance
 - Check that the EC2 instance is in a public subnet with a public IP
 
-## Environment-Specific Deployments
-
-To deploy to different environments (dev, staging, prod):
-
-1. Update the `environment` variable in `terraform.tfvars`
-2. Use separate state file keys in `backend.tf`:
-   ```hcl
-   key = "${var.environment}/terraform.tfstate"
-   ```
+---
 
 ## Additional Resources
 
@@ -333,11 +365,3 @@ See the LICENSE file in the project root.
 2. Make your changes
 3. Test thoroughly
 4. Submit a pull request
-
-## Security Notes
-
-- Never commit `terraform.tfvars` or `*.tfstate` files
-- Rotate AWS credentials regularly
-- Use IAM roles with minimal required permissions
-- Review security group rules regularly
-- Enable CloudTrail for audit logging
