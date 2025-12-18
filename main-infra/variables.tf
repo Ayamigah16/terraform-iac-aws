@@ -45,3 +45,9 @@ variable "ami_id" {
   type        = string
   # Example for eu-west-1: ami-0694d931cee176e7d
 }
+
+variable "instance_type" {
+  description = "The EC2 instance type (e.g., t2.micro, t3.micro, t3.small)"
+  type        = string
+  default     = "t3.micro"
+}

@@ -17,3 +17,9 @@ variable "ami_id" {
   description = "The ID of the AMI to use for the EC2 instance"
   type        = string
 }
+
+variable "instance_type" {
+  description = "The EC2 instance type (e.g., t2.micro, t3.micro)"
+  type        = string
+  default     = "t3.micro"
+}

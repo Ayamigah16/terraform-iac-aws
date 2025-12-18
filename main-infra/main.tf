@@ -10,9 +10,10 @@ module "network" {
 
 # Compute Module: EC2 instance
 module "compute" {
-  source     = "./modules/compute"
-  environment = var.environment
-  subnet_id   = module.network.public_subnet_id
-  sg_id       = module.network.sg_id
-  ami_id      = var.ami_id
+  source        = "./modules/compute"
+  environment   = var.environment
+  subnet_id     = module.network.public_subnet_id
+  sg_id         = module.network.sg_id
+  ami_id        = var.ami_id
+  instance_type = var.instance_type
 }
